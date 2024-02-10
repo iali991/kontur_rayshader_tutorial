@@ -12,7 +12,7 @@ data <- st_read("data/kontur_population_EG_20220630.gpkg")
 
 # check with map
 
-data |> 
+data |>
   ggplot() +
   geom_sf()
 
@@ -20,15 +20,15 @@ data |>
 
 bb <- st_bbox(data)
 
-bottom_left <- st_point(c(bb[["xmin"]], bb[["ymin"]])) |> 
+bottom_left <- st_point(c(bb[["xmin"]], bb[["ymin"]])) |>
   st_sfc(crs = st_crs(data))
 
-bottom_right <- st_point(c(bb[["xmax"]], bb[["ymin"]])) |> 
+bottom_right <- st_point(c(bb[["xmax"]], bb[["ymin"]])) |>
   st_sfc(crs = st_crs(data))
 
 # check by plotting points
 
-data |> 
+data |>
   ggplot() +
   geom_sf() +
   geom_sf(data = bottom_left) +
@@ -36,7 +36,7 @@ data |>
 
 width <- st_distance(bottom_left, bottom_right)
 
-top_left <- st_point(c(bb[["xmin"]], bb[["ymax"]])) |> 
+top_left <- st_point(c(bb[["xmin"]], bb[["ymax"]])) |>
   st_sfc(crs = st_crs(data))
 
 height <- st_distance(bottom_left, top_left)
@@ -55,11 +55,11 @@ if (width > height) {
 
 size <- 5000
 
-data_rast <- st_rasterize(data, 
-                             nx = floor(size * w_ratio),
-                             ny = floor(size * h_ratio))
+data_rast <- st_rasterize(data,
+                          nx = floor(size * w_ratio),
+                          ny = floor(size * h_ratio))
 
-mat <- matrix(data_rast$population, 
+mat <- matrix(data_rast$population,
               nrow = floor(size * w_ratio),
               ncol = floor(size * h_ratio))
 
@@ -75,8 +75,8 @@ swatchplot(txt)
 
 # rgl::rgl.close()
 
-mat |> 
-  height_shade(texture = txt) |> 
+mat |>
+  height_shade(texture = txt) |>
   plot_3d(heightmap = mat,
           zscale = 1000 / 5,
           solid = FALSE,
@@ -86,26 +86,26 @@ render_camera(theta = -20, phi = 45, zoom = .8)
 
 outfile <- "images/final_plot.png"
 
-{
-  start_time <- Sys.time()
-  cat(crayon::cyan(start_time), "\n")
-  if (!file.exists(outfile)) {
-    png::writePNG(matrix(1), target = outfile)
-  }
-  render_highquality(
-    filename = outfile,
-    interactive = FALSE,
-    lightdirection = 280,
-    lightaltitude = c(20, 80),
-    lightcolor = c(c1[2], "white"),
-    lightintensity = c(600, 100),
-    samples = 450,
-    width = 6000,
-    height = 6000
-  )
-  end_time <- Sys.time()
-  diff <- end_time - start_time
-  cat(crayon::cyan(diff), "\n")
+
+start_time <- Sys.time()
+cat(crayon::cyan(start_time), "\n")
+if (!file.exists(outfile)) {
+  png::writePNG(matrix(1), target = outfile)
 }
+render_highquality(
+  filename = outfile,
+  interactive = FALSE,
+  lightdirection = 280,
+  lightaltitude = c(20, 80),
+  lightcolor = c(c1[2], "white"),
+  lightintensity = c(600, 100),
+  samples = 450,
+  width = 600,
+  height = 600
+)
+end_time <- Sys.time()
+diff <- end_time - start_time
+cat(crayon::cyan(diff), "\n")
+
 
 rgl::rgl.close()
