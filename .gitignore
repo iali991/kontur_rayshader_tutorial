@@ -2,7 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
-.RData Tmp
+.RDataTmp
 images
 data/
 *DS_Store
