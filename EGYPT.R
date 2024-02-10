@@ -100,8 +100,8 @@ render_highquality(
   lightcolor = c(c1[2], "white"),
   lightintensity = c(600, 100),
   samples = 450,
-  width = 600,
-  height = 600
+  width = 6000,
+  height = 6000
 )
 end_time <- Sys.time()
 diff <- end_time - start_time
