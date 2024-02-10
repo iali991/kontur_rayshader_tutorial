@@ -8,31 +8,17 @@ library(colorspace)
 
 # load kontur data
 
-data <- st_read("data/kontur_population_US_20220630.gpkg")
-
-# load states 
-
-st <- states()
-
-# filter for florida
-
-florida <- st |> 
-  filter(NAME == "Florida") |> 
-  st_transform(crs = st_crs(data))
+data <- st_read("data/kontur_population_EG_20220630.gpkg")
 
 # check with map
 
-florida |> 
+data |> 
   ggplot() +
   geom_sf()
 
-# do intersection on data to limit kontur to florida
-
-st_florida <- st_intersection(data, florida)
-
 # define aspect ratio based on bounding box
 
-bb <- st_bbox(st_florida)
+bb <- st_bbox(data)
 
 bottom_left <- st_point(c(bb[["xmin"]], bb[["ymin"]])) |> 
   st_sfc(crs = st_crs(data))
@@ -42,7 +28,7 @@ bottom_right <- st_point(c(bb[["xmax"]], bb[["ymin"]])) |>
 
 # check by plotting points
 
-florida |> 
+data |> 
   ggplot() +
   geom_sf() +
   geom_sf(data = bottom_left) +
@@ -67,13 +53,13 @@ if (width > height) {
 
 # convert to raster so we can then convert to matrix
 
-size <- 100
+size <- 5000
 
-florida_rast <- st_rasterize(st_florida, 
+data_rast <- st_rasterize(data, 
                              nx = floor(size * w_ratio),
                              ny = floor(size * h_ratio))
 
-mat <- matrix(florida_rast$population, 
+mat <- matrix(data_rast$population, 
               nrow = floor(size * w_ratio),
               ncol = floor(size * h_ratio))
 
@@ -82,20 +68,20 @@ mat <- matrix(florida_rast$population,
 c1 <- met.brewer("OKeeffe2")
 swatchplot(c1)
 
-texture <- grDevices::colorRampPalette(c1, bias = 2)(256)
-swatchplot(texture)
+txt <- grDevices::colorRampPalette(c1, bias = 2)(256)
+swatchplot(txt)
 
 # plot that 3d thing!
 
 # rgl::rgl.close()
 
 mat |> 
-  height_shade(texture = texture) |> 
+  height_shade(texture = txt) |> 
   plot_3d(heightmap = mat,
-          zscale = 100 / 5,
+          zscale = 1000 / 5,
           solid = FALSE,
           shadowdepth = 0)
-  
+
 render_camera(theta = -20, phi = 45, zoom = .8)
 
 outfile <- "images/final_plot.png"
@@ -123,4 +109,3 @@ outfile <- "images/final_plot.png"
 }
 
 rgl::rgl.close()
-  

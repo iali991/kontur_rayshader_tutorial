@@ -13,7 +13,7 @@ swatchplot(colors)
 text_color <- darken(colors[7], .25)
 swatchplot(text_color)
 
-annot <- glue("This map shows population density of Florida. ",
+annot <- glue("This map shows population density of Egypt ",
               "Population estimates are bucketed into 400 meter (about 1/4 mile) ",
               "hexagons.") |> 
   str_wrap(45)
@@ -21,7 +21,7 @@ annot <- glue("This map shows population density of Florida. ",
 img |> 
   image_crop(gravity = "center",
              geometry = "6000x3500+0-150") |> 
-  image_annotate("Florida Population Density",
+  image_annotate("Egypt Population Density",
                  gravity = "northwest",
                  location = "+200+100",
                  color = text_color,
@@ -34,7 +34,7 @@ img |>
                   color = text_color,
                   size = 125,
                   font = "El Messiri") |> 
-  image_annotate(glue("Graphic by Spencer Schien (@MrPecners) | ",
+  image_annotate(glue("Graphic by Islam Ali | ",
                       "Data: Kontur Population (Released 2022-06-30)"),
                  gravity = "south",
                  location = "+0+100",
