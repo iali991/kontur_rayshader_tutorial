@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
-images/final_plot.png
+.RData Tmp
+images
 data/
 *DS_Store
